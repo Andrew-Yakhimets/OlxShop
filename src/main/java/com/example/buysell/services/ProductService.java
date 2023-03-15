@@ -1,42 +1,39 @@
 package com.example.buysell.services;
 
 import com.example.buysell.models.Product;
+import com.example.buysell.repositories.ProductRepository;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
+@Slf4j
+@RequiredArgsConstructor
 public class ProductService {
-    private List<Product> productList = new ArrayList<>();
-    private long ID = 0;
+    private final ProductRepository productRepository;
 
-    {
-        productList.add(new Product(++ID,"Iphone 14", "CellPhone", 1300, "Lviv", "Andrew"));
-        productList.add(new Product(++ID,"PlayStation 5", "Game console", 500, "Lviv", "Flash7"));
-        productList.add(new Product(++ID,"Mini Cooper CountryMan", "Car", 20000, "Lviv", "Andrii"));
-        productList.add(new Product(++ID,"Orbea", "Bicycle", 999, "Lviv", "Yakhim"));
-    }
-
-    public List<Product> listProducts() {
-        return productList;
+    public List<Product> listProducts(String title) {
+        if(title != null) {
+            return productRepository.findByTitle(title);
+        }
+        return productRepository.findAll();
     }
 
     public void save(Product product) {
-        product.setId(++ID);
-        productList.add(product);
+        log.info("Saving new {}", product);
+        productRepository.save(product);
     }
 
     public void delete (Long id) {
-        productList.removeIf(product -> product.getId().equals(id));
+        log.info("Deleting item with id{}", id);
+        productRepository.deleteById(id);
     }
 
     public Product getProductById(Long id) {
-        for (Product product : productList) {
-            if(product.getId().equals(id)) {
-                return product;
-            }
-        }
-        return null;
+        return productRepository.findById(id).orElse(null);
     }
 }

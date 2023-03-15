@@ -6,13 +6,20 @@
 <body>
 <h1>List of Products</h1>
 
+<form action="/" method="get">
+    Find product by title: <input type="text" name="title"><br>
+    <input type="submit" value="Search"/>
+</form>
+
 <#list productList as product>
 <div>
     <p><b>${product.title}</b> ${product.price } $ | <a href="/product/${product.id}">More details...</a></p>
 </div>
+    <#else>
+    <h3>Currently there is no Products</h3>
 </#list>
 <hr>
-<h3 Create new product></h3>
+<h4>Create new product</h4>
 <form action="/product/create" method="post">
     Name of the Product: <input type="text" name="title"/><br><br>
     Description of the Product: <input type="text" name="description"/><br><br>
